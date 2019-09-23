@@ -14,14 +14,13 @@ A_words=["罵倒","陰口","排斥","脅迫"]
 # 概念B
 B_concept="非攻撃的"
 B_words=["介抱","賛美","談笑","握手"]
-
 # 概念X
 X_concept="自己"
 X_words=["自己","自分","私達","学生"]
 # 概念Y
 Y_concept="他者"
 Y_words=["他者","他人","彼等","教師"]
-
+### 実験で異なるであろう部分終わり###
 
 # 参加者情報
 param_dict={"subj_num":"","gender":["female","male"],"age":"","counter_balance":["CB1","CB2"]}
