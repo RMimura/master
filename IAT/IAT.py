@@ -349,5 +349,5 @@ datafile.close()
 sound.play()
 thankyou.draw()
 win.flip()
-event.waitKeys(keyList=["space"])　＃
+event.waitKeys(keyList=["space"])　# 終わったらスペースキーで操作画面へ移る
 print("Done Experiment")
