@@ -7,7 +7,7 @@ import random
 import codecs
 
 ### 実験によって異なる部分 ###
-
+#AとXもしくはBとYの連合を見たい場合
 ##概念対A-B
 # 概念A
 A_concept="攻撃的"
@@ -47,7 +47,7 @@ datafile=codecs.open(fn_IAT,"w","shift-JIS")
 datafile.write("block,error_num,RT,L_R,word_concept,word\n")
 
 
-#設計(CB1: CB2はABが逆転)
+#設計(CB1: CB2はABが逆転) AX -> AY -> AY -> AXの順で連合強度を測定する
 #1 A-B
 #2 X-Y
 #3 AX-BY(practice) -> #4 AX-BY
