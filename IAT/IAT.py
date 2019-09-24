@@ -1,6 +1,7 @@
 #coding:utf-8
 from __future__ import division
 from __future__ import unicode_literals
+#Python3系は以下からでOK
 from psychopy import visual, event, core, sound, gui
 import random
 import codecs
@@ -22,7 +23,8 @@ Y_concept="他者"
 Y_words=["他者","他人","彼等","教師"]
 ### 実験で異なるであろう部分終わり###
 
-# 参加者情報
+
+# 参加者情報の入力画面
 param_dict={"subj_num":"","gender":["female","male"],"age":"","counter_balance":["CB1","CB2"]}
 dlg=gui.DlgFromDict(param_dict,title=".. + * * INFORMATION * * + ..")
 if dlg.OK==False:
@@ -31,7 +33,6 @@ if dlg.OK==False:
 # 画面情報・時間情報
 win=visual.Window(fullscr=True, monitor="testMonitor", units="deg",color="gray")
 clock=core.Clock()
-clock=clock
 
 # カーソルを消す
 event.Mouse(visible=False)
@@ -61,17 +62,13 @@ datafile.write("block,error_num,RT,L_R,word_concept,word\n")
 #15 BY-AX(practice) -> #16 BY-AX
 
 #刺激単語
-##group A
-#A_words
-##group B
-#B_words
+##group A -> A_words
+##group B -> B_words
 ### group A&B
 AB_words=A_words+B_words
 
-##group X
-X_words
-##group Y
-Y_words
+##group X -> X_words
+##group Y -> Y_words
 ##group X&Y
 XY_words=X_words+Y_words
 
@@ -104,7 +101,6 @@ thankyou=visual.TextStim(win,text="Thank you!\n Please call the experimenter:)",
 
 #刺激 及び 対概念
 #------------------------------
-
 if param_dict["counter_balance"]=="CB1":
     upLeft=(-15,10)
     upRight=(15,10)
@@ -128,12 +124,13 @@ concept_B=visual.TextStim(win,text=B_concept,font="ipagothic",color="skyblue",he
 concept_X=visual.TextStim(win,text=X_concept,font="ipagothic",color="lightgreen",height=2.7)  #pos=(-10, 6) or (10, 6)
 concept_Y=visual.TextStim(win,text=Y_concept, font="ipagothic",color="lightgreen",height=2.7)#pos=(10, 6) or (-10, 6)
 
-stim01=visual.TextStim(win,font="ipagothic",color="skyblue",pos=(0,0),height=3.0)
-stim02=visual.TextStim(win,font="ipagothic",color="lightgreen",pos=(0,0),height=3.0)
+stim01=visual.TextStim(win,font="ipagothic",color="skyblue",pos=(0,0),height=3.0) # AB概念呈示用
+stim02=visual.TextStim(win,font="ipagothic",color="lightgreen",pos=(0,0),height=3.0) # XY概念呈示用
 
-fix=visual.TextStim(win,text="+",font="ipagothic",color="white",pos=(0,0),height=3.0)
-false=visual.TextStim(win,text="×",font="ipagothic",color="red",pos=(0,0),height=3.0)
+fix=visual.TextStim(win,text="+",font="ipagothic",color="white",pos=(0,0),height=3.0) # 中視点
+false=visual.TextStim(win,text="×",font="ipagothic",color="red",pos=(0,0),height=3.0) # バツ印
 #--------------------------------
+
 
 #------------------------------------------------------------------------
                      #実験開始
@@ -142,10 +139,11 @@ false=visual.TextStim(win,text="×",font="ipagothic",color="red",pos=(0,0),heigh
 IAT.draw()
 press.draw()
 win.flip()
-event.waitKeys()
+event.waitKeys() # なんでも良いからキー押しをする
 
-
+# 練習も含め全部で１６ブロック
 for block in range(1,17):
+    # ついゲイ年の呈示位置を決定
     if block in [1,3,4,9,11,12]:
         concept_A.setPos(upLeft)
         concept_B.setPos(upRight)
@@ -191,7 +189,7 @@ for block in range(1,17):
         concept_X.setPos(underRight)
         concept_Y.setPos(underLeft)
     
-    
+    # 対概念の描画と準備画面
     if block in [1,5,9,13]:
         concept_A.draw()
         concept_B.draw()
@@ -210,7 +208,7 @@ for block in range(1,17):
     ready.draw()
     press.draw()
     win.flip()
-    event.waitKeys(keyList=["space"])
+    event.waitKeys(keyList=["space"]) # スペースキーを押すとブロックが始まる
     
     
     if block in [1,5,9,13]:
@@ -226,20 +224,21 @@ for block in range(1,17):
         concept_Y.draw()
     fix.draw()
     win.flip()
-    core.wait(1.0)
+    core.wait(1.0) # 最初の試行だけ中視点が１．０秒間呈示される
     
     for word in words:
-        
+        # 対概念によって刺激呈示の色を変える
         if word in AB_words:
             stim01.setText(word)
         elif word in XY_words:
             stim02.setText(word)
-        error_num=0
+        error_num=0 #誤答数の初期設定
         
         waiting_keypress=True
-        event.getKeys()
-        clock.reset()
+        event.getKeys() # 試行前のキー押しを無効にする
+        clock.reset() # 試行前にタイマーを０に戻す
         while waiting_keypress:
+            # ブロックごとにデータファイルに書き込む内容を変える
             if block in [1,2,3,4]:
                 if word in A_words:
                     stim_kind, correct_key,way="A_words",E,L
@@ -276,18 +275,22 @@ for block in range(1,17):
                     stim_kind, correct_key,way="X_words","i","right"
                 elif word in Y_words:
                     stim_kind, correct_key,way="Y_words","e","left"
-                
+            
+            # 反応するキーはe, i, escapeだけ
             keys=event.getKeys(keyList=["e","i","escape"])  
             
+            # キー押し待ち
             for key in keys:
-                if "escape" in keys:
+                if "escape" in keys: # escapeを押せば実験を強制終了
                     datafile.close()
                     core.quit()
+                # 正答キーを押せばデータファイルへ書き込み、次の試行に移る
                 elif correct_key in keys:
                     datafile.write("block{},{},{:.5f},{},{},{}\n".format(block,error_num,clock.getTime()*1000,way,stim_kind,word))
                     datafile.flush()
                     waiting_keypress=False
                     break
+                # 間違えると、誤答数のカウント、バツ印の呈示
                 else:
                     error_num +=1
                     if block in [1,5,9,13]:
@@ -346,5 +349,5 @@ datafile.close()
 sound.play()
 thankyou.draw()
 win.flip()
-event.waitKeys(keyList=["space"])
+event.waitKeys(keyList=["space"])　＃
 print("Done Experiment")
