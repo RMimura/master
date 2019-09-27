@@ -344,7 +344,7 @@ for block in range(1,17):
 
 datafile.close()
 
-#----------IAT----------
+#----------IAT終了----------
 sound.play()
 thankyou.draw()
 win.flip()
@@ -352,7 +352,7 @@ event.waitKeys(keyList=["space"])
 print("Done Experiment")
 
 
-
+#----------D_score----------
 import pandas as pd
 import numpy as np
 import glob
@@ -470,6 +470,8 @@ matC.iloc[0,3]=param_dict["counter_balance"]
 matC.iloc[0,4]=under_300_sec
 matC.iloc[0,5]=D_score
 fn_IAT_D=param_dict["subj_num"] +"_"+ param_dict["gender"] +"_"+ param_dict["age"] +"_"+ param_dict["counter_balance"]+"_IAT_Dscore"+ ".csv"
+
+# D得点のcsvファイルも作成
 matC.to_csv(fn_IAT_D)
 print("---D_score (Greenwald, Nosek, & Banaji, 2003)---")
 print(round(D_score,3))
