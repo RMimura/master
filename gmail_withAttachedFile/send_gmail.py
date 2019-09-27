@@ -28,19 +28,21 @@ if attach:
     msg["To"] = mail_to
     msg["From"] = account
     msg.attach(MIMEText(text.encode("iso-2022-jp"),"plain", "iso-2022-jp"))
+    
+    # ファイルを添付
+    path="./添付ファイル名"
+    with open(path, "rb") as file:
+        part=MIMEApplication(file.read(), Name=basename(path))
+
+    part['Content-Disposition']='attachment; filename="%s"' % basename(path)
+    msg.attach(part)
+    
 else:
     msg=MIMEText(text.encode("iso-2022-jp"),"plain", "iso-2022-jp")
     msg["Subject"] = subject
     msg["To"] = mail_to
     msg["From"] = account
     
-# ファイルを添付
-path="./添付ファイル"
-with open(path, "rb") as file:
-    part=MIMEApplication(file.read(), Name=basename(path))
-
-part['Content-Disposition']='attachment; filename="%s"' % basename(path)
-msg.attach(part)
 
 # Gmailに接続 --- (*4)
 server = smtplib.SMTP_SSL("smtp.gmail.com", 465, context=ssl.create_default_context())
