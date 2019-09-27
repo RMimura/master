@@ -1,3 +1,4 @@
+@ patch 1
 IAT: 文字対文字のIATです
 IAT_with_picture: 文字対写真のIATです
 スタンダードなIATに加えて、対概念の呈示にカウンターバランスを取りました。
