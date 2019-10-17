@@ -8,19 +8,19 @@ import codecs
 ### 実験によって異なる部分 ###
 
 ##概念対A-B
-# 概念A
-A_concept="攻撃的"
-A_words=["罵倒","陰口","排斥","脅迫"]
+# 概念A(写真を使用)
+A_concept="イヤリング"
+A_words=["earrings1.png","earrings2.png","earrings3.png","earrings4.png","earrings5.png"]# "xxx.png"と書く（変更点）
 # 概念B
-B_concept="非攻撃的"
-B_words=["介抱","賛美","談笑","握手"]
+B_concept="腕時計"
+B_words=["watch1.png","watch2.png","watch3.png","watch4.png","watch5.png"]
 
-# 概念X(写真を使用)
-X_concept="自己"
-X_words=["eg.png","eg2.png"]
+# 概念X
+X_concept="盗んだ"
+X_words=["窃盗","盗品","窃取","泥棒","有罪"]
 # 概念Y（写真を使用）
-Y_concept="他者"
-Y_words=["eg3.png","eg4.png"]
+Y_concept="盗んでいない"
+Y_words=["潔白","無実","無根","無罪","冤罪"]
 
 
 # 参加者情報
@@ -28,6 +28,7 @@ param_dict={"subj_num":"","gender":["female","male"],"age":"","counter_balance":
 dlg=gui.DlgFromDict(param_dict,title=".. + * * INFORMATION * * + ..")
 if dlg.OK==False:
     core.quit()
+
 
 # 画面情報・時間情報
 win=visual.Window(fullscr=True, monitor="testMonitor", units="deg",color="gray")
@@ -53,12 +54,6 @@ datafile.write("block,error_num,RT,L_R,word_concept,word\n")
 #5 B-A
 #6 X-Y
 #7 BX-AY(practice) -> #8 BX-AY
-#9 A-B
-#10 Y-X
-#11 AY-BX(practice) -> #12 AY-BX
-#13 B-A
-#14 Y-X
-#15 BY-AX(practice) -> #16 BY-AX
 #
 #刺激単語
 #group A
@@ -80,14 +75,14 @@ All_words_practice=AB_words+XY_words
 All_words=AB_words+XY_words
 
 #repetition
-AB_words *=3
-XY_words *=3
+AB_words *=2
+XY_words *=2
 
 #連合ブロックの練習繰り返し数を2回とする
 All_words_practice *=2
 
-#連合ブロックの繰り返し数は3回
-All_words *=3
+#連合ブロックの繰り返し数は4回
+All_words *=4
 
 
 #教示文
@@ -124,8 +119,8 @@ concept_B=visual.TextStim(win,text=B_concept,font="ipagothic",color="skyblue",he
 concept_X=visual.TextStim(win,text=X_concept,font="ipagothic",color="lightgreen",height=2.7)  #pos=(-10, 6) or (10, 6)
 concept_Y=visual.TextStim(win,text=Y_concept, font="ipagothic",color="lightgreen",height=2.7)#pos=(10, 6) or (-10, 6)
 
-stim01=visual.TextStim(win,font="ipagothic",color="skyblue",pos=(0,0),height=3.0)
-stim02=visual.ImageStim(win,size=(5,5),pos=(0,0))
+stim01=visual.ImageStim(win,size=(8,8),pos=(0,0))
+stim02=visual.TextStim(win,font="ipagothic",color="lightgreen",pos=(0,0),height=3.0)
 
 fix=visual.TextStim(win,text="+",font="ipagothic",color="white",pos=(0,0),height=3.0)
 false=visual.TextStim(win,text="×",font="ipagothic",color="red",pos=(0,0),height=3.0)
@@ -233,15 +228,33 @@ for block in range(1,17):
     for word in words:
         
         if word in AB_words:
-            stim01.setText(word)
+            stim01.setImage(word)
         elif word in XY_words:
-            stim02.setImage(word)
-        error_num=0
+            stim02.setText(word)
         
         waiting_keypress=True
         event.getKeys()
         clock.reset()
         while waiting_keypress:
+            if block in [1,5,9,13]:
+                concept_A.draw()
+                concept_B.draw()
+                stim01.draw()
+            elif block in [2,6,10,14]:
+                concept_X.draw()
+                concept_Y.draw()
+                stim02.draw()
+            else:
+                concept_A.draw()
+                concept_B.draw()
+                concept_X.draw()
+                concept_Y.draw()
+                if word in AB_words:
+                    stim01.draw()
+                elif word in XY_words:
+                    stim02.draw()
+            win.flip()
+            
             if block in [1,2,3,4]:
                 if word in A_words:
                     stim_kind, correct_key,way="A_words",E,L
@@ -286,12 +299,11 @@ for block in range(1,17):
                     datafile.close()
                     core.quit()
                 elif correct_key in keys:
-                    datafile.write("block{},{},{:.5f},{},{},{}\n".format(block,error_num,clock.getTime()*1000,way,stim_kind,word))
+                    datafile.write("block{},0,{:.5f},{},{},{}\n".format(block,clock.getTime()*1000,way,stim_kind,word))
                     datafile.flush()
                     waiting_keypress=False
                     break
                 else:
-                    error_num +=1
                     if block in [1,5,9,13]:
                         concept_A.draw()
                         concept_B.draw()
@@ -306,26 +318,11 @@ for block in range(1,17):
                     false.draw()
                     win.flip()
                     core.wait(0.3)
-                    waiting_keypress=True
+                    datafile.write("block{},1,{:.5f},{},{},{}\n".format(block,clock.getTime()*1000,way,stim_kind,word))
+                    datafile.flush()
+                    waiting_keypress=False # 間違えたら終わり（変更点）
+                    break
                     
-            if block in [1,5,9,13]:
-                concept_A.draw()
-                concept_B.draw()
-                stim01.draw()
-            elif block in [2,6,10,14]:
-                concept_X.draw()
-                concept_Y.draw()
-                stim02.draw()
-            else:
-                concept_A.draw()
-                concept_B.draw()
-                concept_X.draw()
-                concept_Y.draw()
-                if word in AB_words:
-                    stim01.draw()
-                elif word in XY_words:
-                    stim02.draw()
-            win.flip()
             
         if block in [1,5,9,13]:
             concept_A.draw()
@@ -392,12 +389,12 @@ for i in range(0,len(matA)):
 
 under_300_sec= n/len(matA)*100
 if under_300_sec >= 10:
-    print("His/Her RT was too fast to use!!")
-    print(str(round(under_300_sec,2)) + "%")
+    print("His/Her RT were too fast to use!!")
+    print("Under 300 ms was "+str(round(under_300_sec,2)) + "%")
     D_score=np.nan
 else: # 300 ms未満の反応時間が10 %未満だった場合は以下へ進む
     print("Calculating D-score...")
-    print(str(round(under_300_sec,2)) + "%")
+    print("Under 300 ms was only "+str(round(under_300_sec,2)) + "%")
     
     # D得点の計算
     # 平均や標準偏差を記入する表を作成
@@ -475,3 +472,5 @@ fn_IAT_D=param_dict["subj_num"] +"_"+ param_dict["gender"] +"_"+ param_dict["age
 matC.to_csv(fn_IAT_D)
 print("---D_score (Greenwald, Nosek, & Banaji, 2003)---")
 print(round(D_score,3))
+
+print("This script was made by R. Mimura @ Chiba University")
