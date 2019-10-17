@@ -9,18 +9,18 @@ import codecs
 
 ##概念対A-B
 # 概念A(写真を使用)
-A_concept="イヤリング"
-A_words=["earrings1.png","earrings2.png","earrings3.png","earrings4.png","earrings5.png"]# "xxx.png"と書く（変更点）
+A_concept="概念1"
+A_words=["xx.png","","","",""]# "xxx.png"と書く（変更点）
 # 概念B
-B_concept="腕時計"
-B_words=["watch1.png","watch2.png","watch3.png","watch4.png","watch5.png"]
+B_concept="概念2"
+B_words=["yyy.png","","","",""]
 
 # 概念X
-X_concept="盗んだ"
-X_words=["窃盗","盗品","窃取","泥棒","有罪"]
-# 概念Y（写真を使用）
-Y_concept="盗んでいない"
-Y_words=["潔白","無実","無根","無罪","冤罪"]
+X_concept="概念3"
+X_words=["AA","","","",""]
+# 概念Y
+Y_concept="概念4"
+Y_words=["","","","",""]
 
 
 # 参加者情報
